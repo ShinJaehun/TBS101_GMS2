@@ -9,6 +9,7 @@
     <sprite>sprites\sNode</sprite>
     <sprite>sprites\sCursor</sprite>
     <sprite>sprites\sSelected</sprite>
+    <sprite>sprites\sHero</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -16,6 +17,8 @@
     <object>objects\oNode</object>
     <object>objects\oGame</object>
     <object>objects\oCursor</object>
+    <object>objects\oActor</object>
+    <object>objects\oHero</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
