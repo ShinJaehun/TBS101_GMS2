@@ -25,14 +25,20 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>globalvar map;
+            <string>state = "initializing";
+
+globalvar map;
 
 mapWidth = room_width/GRID_SIZE;
 mapHeight = room_height/GRID_SIZE;
 
+// oNode 그리기
 for(xx = 0; xx &lt; mapWidth; xx += 1){
     for(yy = 0; yy &lt; mapHeight; yy += 1){
         map[xx, yy] = instance_create(xx * GRID_SIZE, yy * GRID_SIZE, oNode);
+        
+        map[xx, yy].gridX = xx; // oNode에 gridX, gridY 속성을 추가했음!
+        map[xx, yy].gridY = yy;
     }
 }
 
@@ -67,8 +73,10 @@ for(xx = 0; xx &lt; mapWidth; xx += 1){
     }
 }
 
-instance_create(x, y, oCursor);
+instance_create(x, y, oCursor); // x, y에 커서 object를 그리다
 
+/* 
+// sandy 와 danny: room에서 creation code로 생성하는 것으로 대체
 with(instance_create(5 * GRID_SIZE, 5 * GRID_SIZE, oHero)){
     gridX = 5;
     gridY = 5;
@@ -82,8 +90,65 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
     name="Danny";
     map[gridX, gridY].occupant = id;
 }
+*/
 
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="3" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>switch(state){
+    case "initializing": // 초기화는 1회만...
 
+    //이 로직을 oNode 대신 여기에 넣어야 작동한다!
+    with(oNode){
+        //if(instance_position(x + 1, y + 1, oTerrain)){ // 예상한대로 잘 작동함, 아마 중간값 같은 걸 쓰는 거 같애
+        if(instance_position(x + 16, y + 16, oTerrain)){
+            tempTerrain = instance_position(x + 16, y + 16, oTerrain);
+            switch(tempTerrain.type){ // room에 그려 넣은 terrain type에 따라서
+                case "wall":
+                    type = "wall";
+                    sprite_index = sWall;
+                    passable = false;
+                    break;
+                case "rubble":
+                    type = "rubble";
+                    sprite_index = sRubble;
+                    cost = 2;
+                    break;
+            }
+            with(tempTerrain){
+                instance_destroy(); // oNode는 삭제하고 wall/rubble로 대체
+            }
+        }
+        
+        if(instance_position(x + 16, y + 16, oActor)){
+            occupant = instance_position(x + 16, y + 16, oActor);
+            occupant.gridX = gridX;
+            occupant.gridY = gridY;
+        }
+
+    }
+    state = "ready"; // 초기화 완료 선언
+    break;
+}
 </string>
           </argument>
         </arguments>
