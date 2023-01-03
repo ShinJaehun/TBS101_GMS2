@@ -68,13 +68,19 @@ if (gridX &lt; 0 || gridY &lt; 0 || gridX &gt;= room_width / GRID_SIZE || gridY 
 if (mouse_check_button_pressed(mb_left)){
     if(hoverNode.occupant != noone){
         selectedActor = hoverNode.occupant;
+        
+        selectedActor.actions = 2;
+        //movement_range(map[selectedActor.gridX, selectedActor.gridY], selectedActor.move, selectedActor.actions);
+        movement_range(hoverNode, selectedActor.move, selectedActor.actions);
     } else {
         selectedActor = noone;
+        wipe_nodes();
     }
 }
 
 if (mouse_check_button_pressed(mb_right)) {
-    if (selectedActor != noone &amp;&amp; hoverNode.occupant == noone &amp;&amp; hoverNode.passable) {
+    //if (selectedActor != noone &amp;&amp; hoverNode.occupant == noone &amp;&amp; hoverNode.passable) {
+    if (selectedActor != noone &amp;&amp; hoverNode.moveNode) {
         // first clear the node of selected actor
         map[selectedActor.gridX, selectedActor.gridY].occupant = noone;
         
@@ -86,9 +92,26 @@ if (mouse_check_button_pressed(mb_right)) {
         
         // update new node's occupant status
         hoverNode.occupant = selectedActor;
+
+        // if selectedActor perform double move deselect
+        // otherwise decrement actions and reselect
         
+        if(hoverNode.G &gt; selectedActor.move){
+            selectedActor = noone;
+            wipe_nodes();
+        } else {
+            selectedActor.actions -= 1;
+            if (selectedActor.actions &gt; 0) {
+                movement_range(hoverNode, selectedActor.move, selectedActor.actions);
+            } else {
+                selectedActor = noone;
+                wipe_nodes();
+            }
+        }
+                
     } else {
         selectedActor = noone;
+        wipe_nodes();
     }
 }
 </string>

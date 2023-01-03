@@ -29,6 +29,11 @@
 gridY = 0;
 
 name = "Error";
+
+// character statistics
+
+move = 5;
+actions = 2;
 </string>
           </argument>
         </arguments>
