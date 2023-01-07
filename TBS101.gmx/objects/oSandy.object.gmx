@@ -28,6 +28,29 @@
             <string>event_inherited();
 
 name = "Sandy";
+
+class = "Rogue";
+race = "Elf";
+
+// character statistics
+level = 1;
+profMod = 2 + floor(level / 5);
+strMod = 0;
+dexMod = 3;
+conMod = 2;
+intMod = 1;
+wisMod = 0;
+maxHitPoints = 6 + conMod + ((level - 1) * (4 + conMod));
+hitPoints = maxHitPoints;
+
+hitBonus = profMod + dexMod;
+
+move = 7;  // 얼마나 많은 그리드를 움직일 수 있는가?
+actions = 2;
+
+initiative = dexMod;
+initRoll = 0;
+
 </string>
           </argument>
         </arguments>

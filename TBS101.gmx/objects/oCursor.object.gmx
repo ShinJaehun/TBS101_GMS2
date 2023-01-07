@@ -242,11 +242,18 @@ if(hoverNode != noone){
 
 // 아랫쪽이 보이지 않아서 클릭 후 이름 정보를 오른쪽 위로 옮김!
 if (selectedActor != noone) {
-    tempText = selectedActor.name;
+    tempText = selectedActor.name + " the " + selectedActor.race + " " + selectedActor.class;
+    tempHitPoints = "HP: " + string(selectedActor.hitPoints) + " / " + string(selectedActor.maxHitPoints);
+    tempHitBonus = "Hit Bonus: " + string(selectedActor.hitBonus);
+    
     draw_set_color(c_black);
-    draw_rectangle(room_width - string_width(tempText), 0, room_width, string_height(tempText), false);
+    draw_rectangle(room_width - string_width(tempHitBonus), 0, room_width, string_height(tempHitBonus), false);
+    draw_rectangle(room_width - string_width(tempHitPoints), 16, room_width, string_height(tempHitPoints) + 16, false);
+    draw_rectangle(room_width - string_width(tempText), 32, room_width, string_height(tempText) + 32, false);
     draw_set_color(c_white);
-    draw_text(room_width - string_width(tempText), 0, tempText);
+    draw_text(room_width - string_width(tempHitBonus), 0, tempHitBonus);
+    draw_text(room_width - string_width(tempHitPoints), 16, tempHitPoints);
+    draw_text(room_width - string_width(tempText), 32, tempText);
 }
 
 /*

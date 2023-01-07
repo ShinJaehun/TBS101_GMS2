@@ -12,6 +12,7 @@
     <sprite>sprites\sHero</sprite>
     <sprite>sprites\sWall</sprite>
     <sprite>sprites\sRubble</sprite>
+    <sprite>sprites\sTarget</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -32,12 +33,15 @@
     <object>objects\oTerrain</object>
     <object>objects\oWall</object>
     <object>objects\oRubble</object>
+    <object>objects\oTarget</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
   </rooms>
-  <constants number="1">
+  <constants number="3">
     <constant name="GRID_SIZE">32</constant>
+    <constant name="RED_ARMY">10</constant>
+    <constant name="BLUE_ARMY">20</constant>
   </constants>
   <help>
     <rtf>help.rtf</rtf>

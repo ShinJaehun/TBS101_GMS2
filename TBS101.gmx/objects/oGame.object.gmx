@@ -181,18 +181,23 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
         if(currentActor == noone){
             turnCounter += 1;
 
-            if (turnCounter &gt;= turnMax) { // 이거 &gt;= 대신 &gt;만 써서 계속 이런 오류가 났음...
+            if (turnCounter &gt;= turnMax) {
                 turnCounter = 0;
                 roundCounter += 1;
             }
-
-            // Variable oNode.&lt;unknown variable&gt;(100031, -2147483648) not set before reading it.
-            // at gml_Object_oGame_StepNormalEvent_1 (line 61) - movement_range(map[currentActor.gridX, currentActor.gridY], currentActor.move, currentActor.actions);
             
             currentActor = ds_list_find_value(turnOrder, turnCounter);
             currentActor.actions = 2;
-            oCursor.selectedActor = currentActor;
-            movement_range(map[currentActor.gridX, currentActor.gridY], currentActor.move, currentActor.actions);        
+            
+            // only pass off actions and cursor control if actor is BLUE_ARMY
+            // otherwise set flash variable to true and set alarm
+            if (currentActor.army == BLUE_ARMY){
+                oCursor.selectedActor = currentActor;
+                movement_range(map[currentActor.gridX, currentActor.gridY], currentActor.move, currentActor.actions);                    
+            } else {
+                currentActor.flash = true;
+                currentActor.alarm[0] = 30;
+            }
         }   
         break;
 }
