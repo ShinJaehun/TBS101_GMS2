@@ -27,6 +27,19 @@
             <kind>1</kind>
             <string>state = "initializing";
 
+randomize();
+//random_set_seed(106543);
+
+turnOrder = ds_list_create();
+
+turnCounter = -1;
+
+turnMax = 0;
+
+currentActor = noone;
+
+roundCounter = 0;
+
 globalvar map;
 
 mapWidth = room_width/GRID_SIZE;
@@ -116,38 +129,72 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
             <kind>1</kind>
             <string>switch(state){
     case "initializing": // 초기화는 1회만...
-
-    //이 로직을 oNode 대신 여기에 넣어야 작동한다!
-    with(oNode){
-        //if(instance_position(x + 1, y + 1, oTerrain)){ // 예상한대로 잘 작동함, 아마 중간값 같은 걸 쓰는 거 같애
-        if(instance_position(x + 16, y + 16, oTerrain)){
-            tempTerrain = instance_position(x + 16, y + 16, oTerrain);
-            switch(tempTerrain.type){ // room에 그려 넣은 terrain type에 따라서
-                case "wall":
-                    type = "wall";
-                    sprite_index = sWall;
-                    passable = false;
-                    break;
-                case "rubble":
-                    type = "rubble";
-                    sprite_index = sRubble;
-                    cost = 2;
-                    break;
+        //이 로직을 oNode 대신 여기에 넣어야 작동한다!
+        with(oNode){
+            //if(instance_position(x + 1, y + 1, oTerrain)){ // 예상한대로 잘 작동함, 아마 중간값 같은 걸 쓰는 거 같애
+            if(instance_position(x + 16, y + 16, oTerrain)){
+                tempTerrain = instance_position(x + 16, y + 16, oTerrain);
+                switch(tempTerrain.type){ // room에 그려 넣은 terrain type에 따라서
+                    case "wall":
+                        type = "wall";
+                        sprite_index = sWall;
+                        passable = false;
+                        break;
+                    case "rubble":
+                        type = "rubble";
+                        sprite_index = sRubble;
+                        cost = 2;
+                        break;
+                }
+                with(tempTerrain){
+                    instance_destroy(); // oNode는 삭제하고 wall/rubble로 대체
+                }
             }
-            with(tempTerrain){
-                instance_destroy(); // oNode는 삭제하고 wall/rubble로 대체
+            
+            if(instance_position(x + 16, y + 16, oActor)){
+                occupant = instance_position(x + 16, y + 16, oActor);
+                occupant.gridX = gridX;
+                occupant.gridY = gridY;
             }
+        }
+        state = "roll init";
+        break;
+    case "roll init":
+        tempInit = ds_priority_create();
+        with(oActor){
+            initRoll = irandom_range(1, 20) + initiative;
+            ds_priority_add(other.tempInit, id, initRoll); // other는... oGame으로 대처할 수 있음????
+            //ds_priority_add(oGame.tempInit, id, initRoll); // other는... oGame으로 대처할 수 있음????
         }
         
-        if(instance_position(x + 16, y + 16, oActor)){
-            occupant = instance_position(x + 16, y + 16, oActor);
-            occupant.gridX = gridX;
-            occupant.gridY = gridY;
+        while(ds_priority_size(tempInit) &gt; 0){
+            ds_list_add(turnOrder, ds_priority_delete_max(tempInit));
         }
+        
+        turnMax = ds_list_size(turnOrder);
+        
+        ds_priority_destroy(tempInit);
+        state = "ready";
+        break;
 
-    }
-    state = "ready"; // 초기화 완료 선언
-    break;
+    case "ready":  
+        if(currentActor == noone){
+            turnCounter += 1;
+
+            if (turnCounter &gt;= turnMax) { // 이거 &gt;= 대신 &gt;만 써서 계속 이런 오류가 났음...
+                turnCounter = 0;
+                roundCounter += 1;
+            }
+
+            // Variable oNode.&lt;unknown variable&gt;(100031, -2147483648) not set before reading it.
+            // at gml_Object_oGame_StepNormalEvent_1 (line 61) - movement_range(map[currentActor.gridX, currentActor.gridY], currentActor.move, currentActor.actions);
+            
+            currentActor = ds_list_find_value(turnOrder, turnCounter);
+            currentActor.actions = 2;
+            oCursor.selectedActor = currentActor;
+            movement_range(map[currentActor.gridX, currentActor.gridY], currentActor.move, currentActor.actions);        
+        }   
+        break;
 }
 </string>
           </argument>

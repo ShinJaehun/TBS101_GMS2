@@ -26,6 +26,8 @@
     <object>objects\oCursor</object>
     <object>objects\oActor</object>
     <object>objects\oSandy</object>
+    <object>objects\oSunny</object>
+    <object>objects\oRizzo</object>
     <object>objects\oDanny</object>
     <object>objects\oTerrain</object>
     <object>objects\oWall</object>

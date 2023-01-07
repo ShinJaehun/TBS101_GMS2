@@ -97,8 +97,9 @@ for(ii = 0; ii < ds_list_size(closed); ii += 1) {
     current.moveNode = true;
     
     color_move_node(current, argument1, argument2);
-
 }
+
+start.moveNode = false;
 
 // destory 
 ds_list_destroy(closed);

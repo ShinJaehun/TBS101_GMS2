@@ -36,6 +36,10 @@ name = "Error";
 move = 5;  // 얼마나 많은 그리드를 움직일 수 있는가?
 actions = 2;
 
+initiative = 0;
+initRoll = 0;
+
+
 // variable related to pathing
 movementPath = path_add(); // 이것도 gml에서 쓰이는 DS라는디...
 path_set_kind(movementPath, 2); // type 2: rigid path?
@@ -102,6 +106,8 @@ state = "idle";
 if(actions &gt; 0){
     oCursor.selectedActor = id;
     movement_range(map[gridX, gridY], move, actions)
+} else {
+    oGame.currentActor = noone;
 }
 </string>
           </argument>

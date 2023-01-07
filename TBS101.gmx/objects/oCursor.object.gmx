@@ -65,6 +65,7 @@ if (gridX &lt; 0 || gridY &lt; 0 || gridX &gt;= room_width / GRID_SIZE || gridY 
     hoverNode = map[gridX, gridY];
 }
 
+/*
 if (mouse_check_button_pressed(mb_left)){
     if(hoverNode.occupant != noone){
         if(hoverNode.occupant != selectedActor){ // 현재 위치에 다시 클릭하는 거 방지
@@ -78,6 +79,7 @@ if (mouse_check_button_pressed(mb_left)){
         wipe_nodes();
     }
 }
+*/
 
 /*
 if (mouse_check_button_pressed(mb_right)) {
@@ -172,11 +174,14 @@ if (mouse_check_button_pressed(mb_right)) {
         }
         
         selectedAcotr = noone;
-                                   
+
+    }
+/*                                   
     } else {
         selectedActor = noone;
         wipe_nodes();
     }
+*/
 }
 
 </string>
