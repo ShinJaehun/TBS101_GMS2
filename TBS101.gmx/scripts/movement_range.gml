@@ -14,15 +14,17 @@ start = argument0;
 range = argument1 * argument2;
 
 // create data structures
+// open: for nodes we haven't calculated yet
 open = ds_priority_create(); // list인데 number가 붙음
+// closed: nodes who have been calculated
 closed = ds_list_create();
 
 // add starting node to the open list
-ds_priority_add(open, start, start.G) // g가 priority
+ds_priority_add(open, start, start.G) // g가 priority, starting node의 g는 0
 
 // while open queue is not empty... repeat the following until all nodes have been looked at
 while(ds_priority_size(open) > 0) {
-    // remove node with lowest G score from open
+    // remove node with lowest G score from open, 그리고 그걸 current에 
     current = ds_priority_delete_min(open);
     
     // add that node to the closed list
@@ -32,6 +34,7 @@ while(ds_priority_size(open) > 0) {
     for(ii = 0; ii < ds_list_size(current.neighbors); ii += 1) {
         // store current neighbor in neighbor variables
         neighbor = ds_list_find_value(current.neighbors, ii);
+        show_debug_message(string(ii) + " XY: " + string(neighbor.gridX) + ", " + string(neighbor.gridY))
         
         // add neighbor to open list if it qualifies : 
         // neighbor is passable,
