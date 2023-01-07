@@ -25,15 +25,121 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>gridX = 0;
+            <string>state = "idle"
+
+gridX = 0;
 gridY = 0;
 
 name = "Error";
 
 // character statistics
-
-move = 5;
+move = 5;  // 얼마나 많은 그리드를 움직일 수 있는가?
 actions = 2;
+
+// variable related to pathing
+movementPath = path_add(); // 이것도 gml에서 쓰이는 DS라는디...
+path_set_kind(movementPath, 2); // type 2: rigid path?
+path_set_closed(movementPath, false);
+
+moveSpeed = 8; // 픽셀이 움직일 때 속력
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="3" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>switch(state){
+    case "begin path":
+        //begin moving along path
+        path_start(movementPath, moveSpeed, 0, true);
+        state = "moving";
+        break;
+
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="7" enumb="8">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>// clear path
+path_clear_points(movementPath);
+
+state = "idle";
+
+if(actions &gt; 0){
+    oCursor.selectedActor = id;
+    movement_range(map[gridX, gridY], move, actions)
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="8" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>// if cursor is hovering over a different node than actor's
+// 커서가 있는 그리드까지 라인 그리기, 이 코드를 cursor가 아닌 여기에 쓰는 이유가 있는디 잘 모르겠음.
+if (oCursor.hoverNode != noone &amp;&amp; oCursor.hoverNode != map[gridX, gridY]){
+    current = oCursor.hoverNode;
+    
+    //step through every node in the chain, parent to parent, until we reach the actor's node
+    while(current.parent != noone){
+        //draw_line_width_color()와 다름
+        draw_line_width_colour(current.x + 16, current.y + 16, current.parent.x + 16, current.parent.y + 16, 4, c_lime, c_lime);
+        current = current.parent;
+    }
+}
+
+
+draw_self();
 </string>
           </argument>
         </arguments>

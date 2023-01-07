@@ -34,7 +34,7 @@ while(ds_priority_size(open) > 0) {
     for(ii = 0; ii < ds_list_size(current.neighbors); ii += 1) {
         // store current neighbor in neighbor variables
         neighbor = ds_list_find_value(current.neighbors, ii);
-        show_debug_message(string(ii) + " XY: " + string(neighbor.gridX) + ", " + string(neighbor.gridY))
+        //show_debug_message(string(ii) + " XY: " + string(neighbor.gridX) + ", " + string(neighbor.gridY))
         
         // add neighbor to open list if it qualifies : 
         // neighbor is passable,
