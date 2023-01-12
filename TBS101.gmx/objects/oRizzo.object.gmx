@@ -34,20 +34,35 @@ race = "Human";
 
 // character statistics
 level = 1;
+
+// base statistics
 profMod = 2 + floor(level / 5);
 strMod = 2;
 dexMod = 0;
 conMod = 1;
 intMod = 0;
 wisMod = 3;
+
+// health variables
 maxHitPoints = 8 + conMod + ((level - 1) * (5 + conMod));
 hitPoints = maxHitPoints;
 
+// attack variables
 hitBonus = profMod + strMod;
 
+// damage variables
+damageDice = 9;
+damageBonus = strMod;
+damageType = "bludgeoning";
+
+// defense variables
+armorClass = 16;
+
+// move and action variables
 move = 6;  // 얼마나 많은 그리드를 움직일 수 있는가?
 actions = 2;
 
+// initiative variables
 initiative = dexMod;
 initRoll = 0;
 

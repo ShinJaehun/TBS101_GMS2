@@ -25,10 +25,12 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>state = "initializing";
+            <string>draw_set_font(fDefault);
 
 randomize();
 //random_set_seed(106543);
+
+state = "initializing";
 
 turnOrder = ds_list_create();
 
@@ -136,13 +138,13 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
                 tempTerrain = instance_position(x + 16, y + 16, oTerrain);
                 switch(tempTerrain.type){ // room에 그려 넣은 terrain type에 따라서
                     case "wall":
+                        instance_change(oWall, true);
                         type = "wall";
-                        sprite_index = sWall;
                         passable = false;
                         break;
                     case "rubble":
+                        instance_change(oRubble, true);
                         type = "rubble";
-                        sprite_index = sRubble;
                         cost = 2;
                         break;
                 }
@@ -188,12 +190,18 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
             
             currentActor = ds_list_find_value(turnOrder, turnCounter);
             currentActor.actions = 2;
+            currentActor.canAct = true;
             
             // only pass off actions and cursor control if actor is BLUE_ARMY
             // otherwise set flash variable to true and set alarm
             if (currentActor.army == BLUE_ARMY){
                 oCursor.selectedActor = currentActor;
                 movement_range(map[currentActor.gridX, currentActor.gridY], currentActor.move, currentActor.actions);                    
+                switch(currentActor.attackType){
+                    case "ranged":
+                        ranged_attack_range(currentActor);
+                        break;
+                }
             } else {
                 currentActor.flash = true;
                 currentActor.alarm[0] = 30;

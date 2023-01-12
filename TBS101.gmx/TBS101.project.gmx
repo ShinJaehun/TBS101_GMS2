@@ -13,6 +13,8 @@
     <sprite>sprites\sWall</sprite>
     <sprite>sprites\sRubble</sprite>
     <sprite>sprites\sTarget</sprite>
+    <sprite>sprites\sBiff</sprite>
+    <sprite>sprites\sArrow</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -20,7 +22,13 @@
     <script>scripts\wipe_nodes.gml</script>
     <script>scripts\color_move_node.gml</script>
     <script>scripts\movement_range.gml</script>
+    <script>scripts\ranged_attack_range.gml</script>
   </scripts>
+  <fonts name="fonts">
+    <font>fonts\fDefault</font>
+    <font>fonts\fDamage</font>
+    <font>fonts\fCrit</font>
+  </fonts>
   <objects name="objects">
     <object>objects\oNode</object>
     <object>objects\oGame</object>
@@ -34,6 +42,10 @@
     <object>objects\oWall</object>
     <object>objects\oRubble</object>
     <object>objects\oTarget</object>
+    <object>objects\oDamageText</object>
+    <object>objects\oBiff</object>
+    <object>objects\oRangedAttack</object>
+    <object>objects\oArrow</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>

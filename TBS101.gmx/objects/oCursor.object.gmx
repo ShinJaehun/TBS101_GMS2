@@ -182,6 +182,17 @@ if (mouse_check_button_pressed(mb_right)) {
         wipe_nodes();
     }
 */
+
+    if(selectedActor != noone &amp;&amp; hoverNode.attackNode){
+        selectedActor.canAct = false;
+        selectedActor.actions -= 1;
+        selectedActor.attackTarget = hoverNode.occupant;
+        selectedActor.state = "begin attack"
+        selectedActor.attackTimer = 10;
+        
+        selectedActor = noone;
+        wipe_nodes();
+    }
 }
 
 </string>
