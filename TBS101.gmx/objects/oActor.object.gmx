@@ -72,19 +72,26 @@ armorClass = 10 + dexMod;
 
 // move and action variables
 
-move = 6;  // 얼마나 많은 그리드를 움직일 수 있는가?
+move = 6;
 actions = 2;
 canAct = false;
 
+// special action variables
+charge = false;
+sneakAttack = false;
+
+// initiative variables
 initiative = dexMod;
 initRoll = 0;
 
 // variable related to pathing
-movementPath = path_add(); // 이것도 gml에서 쓰이는 DS라는디...
-path_set_kind(movementPath, 2); // type 2: rigid path?
+movementPath = path_add();
+path_set_kind(movementPath, 2);
 path_set_closed(movementPath, false);
 
-moveSpeed = 8; // 픽셀이 움직일 때 속력
+endPath = "idle"
+
+moveSpeed = 8;
 
 // variables realted to effects
 shake = 0;
@@ -118,38 +125,64 @@ switch(state){
         //begin moving along path
         path_start(movementPath, moveSpeed, 0, true);
         state = "moving";
+        // show_debug_message("state : " + state);
         break;
 
     case "begin attack":
         attackTimer -= 1;
         if(attackTimer &lt;= 0){
             state = "attack";
+            // show_debug_message("state : " + state);
         }
         break;
+
     case "attack":
+        // make attack roll
+        attackRoll = irandom_range(1, 20);
+        
+        applySneakAttack = false;
+        if(sneakAttack){
+            tempNode = map[attackTarget.gridX, attackTarget.gridY];
+            for(ii = 0; ii &lt; ds_list_size(tempNode.neighbors); ii += 1){
+                current = ds_list_find_value(tempNode.neighbors, ii);
+                if(current.occupant != noone){
+                    if(current.occupant.army != attackTarget.army){
+                        applySneakAttack = true;
+                    }
+                }
+            }
+        }
+        
+        // determine outcome of roll
+        if(attackRoll == 20){
+            attackStatus = "crit";
+        } else {
+            if(attackRoll + hitBonus &gt;= attackTarget.armorClass){
+                attackStatus = "hit";
+            } else {
+                attackStatus = "miss";
+            }
+        }
+        tempDamage = 0;
+        
+        // make damage roll
+        if(attackStatus != "miss"){
+            tempDamage = irandom_range(1, damageDice) + damageBonus;
+            
+            if(applySneakAttack){
+                tempDamage += irandom_range(1, sneakAttackDamage);
+            }
+            
+            if(attackStatus == "crit"){
+                tempDamage += irandom_range(1, damageDice);
+                if(applySneakAttack){
+                    tempDamage += irandom_range(1, sneakAttackDamage);
+                }
+            }
+        }
+    
         switch(attackType){
             case "ranged":
-                // make attack roll
-                attackRoll = irandom_range(1, 20);
-                
-                // determine outcome of roll
-                if(attackRoll == 20){
-                    attackStatus = "crit";
-                } else {
-                    if(attackRoll + hitBonus &gt;= attackTarget.armorClass){
-                        attackStatus = "hit";
-                    } else {
-                        attackStatus = "miss";
-                    }
-                }
-                tempDamage = 0;
-                // make damage roll
-                if(attackStatus != "miss"){
-                    tempDamage = irandom_range(1, damageDice) + damageBonus;
-                    if(attackStatus == "crit"){
-                        tempDamage += irandom_range(1, damageDice);
-                    }
-                }
                 attackDir = point_direction(x + 16, y + 16, attackTarget.x + 16, attackTarget.y + 16);
                 beginX = x + 16 + lengthdir_x(30, attackDir);
                 beginY = y + 16 + lengthdir_y(30, attackDir);
@@ -170,10 +203,53 @@ switch(state){
                 }
                 
                 state = "end attack";
+                // show_debug_message("state : " + state);
                 attackTimer = 30;
+                break;
+                
+            case "melee":
+                if(attackStatus != "miss"){
+                    for(ii = 0; ii &lt; 6; ii += 1){
+                        with(instance_create(attackTarget.x + 16, attackTarget.y + 16, oBiff)){
+                            direction = irandom(360);
+                            speed = choose(2, 4);
+                            scale = choose(2, 3);
+                            image_speed = 0.5;
+                            if(other.attackStatus == "crit"){
+                                color = c_yellow
+                            }
+                        }
+                    }
+                    if(attackStatus == "crit"){
+                        attackTarget.shake = 8;
+                        attackTarget.shakeMag = 8;
+                    } else {
+                        attackTarget.shake = 4;
+                        attackTarget.shakeMag = 4;
+                    }
+                    
+                    attackTarget.hitPoints -= tempDamage;
+                    
+                    with(instance_create(attackTarget.x + 28, attackTarget.y + 2, oDamageText)){
+                        text = "-" + string(other.tempDamage);
+                        ground = y;
+                        if(other.attackStatus == "crit"){
+                            font = fCrit;
+                        }
+                    }
+                } else {
+                    with(instance_create(attackTarget.x + 28, attackTarget.y + 2, oDamageText)){
+                        text = "miss";
+                        ground = y;
+                    }
+                }
+                state = "end attack";
+                // show_debug_message("state : " + state);
+                attackTimer = 10;
                 break;
         }
         break;
+        
     case "end attack":
         attackTimer -= 1;
         if(attackTimer &lt;= 0){
@@ -181,9 +257,13 @@ switch(state){
                 oCursor.selectedActor = id;
                 movement_range(map[gridX, gridY], move, actions);
             } else {
-                oCursor.currentActor = noone;
+                //show_debug_message("I can't move anymore!"); 
+                // 아 몇 시간 동안 찾아 헤매던 버그 발견! 
+                // oCursor.currentActor = noone; oCursor에는 currentActor가 없지요....ㅠㅠ
+                oGame.currentActor = noone;
             }
-            state = "idle"
+            state = "idle";
+            //show_debug_message("oActor state : " + state);
         }
         break;
         
@@ -224,23 +304,34 @@ switch(state){
             <string>// clear path
 path_clear_points(movementPath);
 
-state = "idle";
+if(endPath == "ready"){
+    state = "idle";
 
-if(actions &gt; 0){
-    oCursor.selectedActor = id;
-    movement_range(map[gridX, gridY], move, actions)
-    
-    if(canAct){
-        switch(attackType){ 
-            case "ranged":
-                ranged_attack_range(id);
-                break;
+    // if actor has actions remaining, become cursor's selectedActor
+    if(actions &gt; 0){
+        oCursor.selectedActor = id;
+        movement_range(map[gridX, gridY], move, actions)
+        
+        if(canAct){
+            switch(attackType){ 
+                case "ranged":
+                    ranged_attack_range(id);
+                    break;
+                case "melee":
+                    melee_attack_range(id);
+                    break;
+            }
         }
+        
+    } else {
+        oGame.currentActor = noone;
     }
-    
+
 } else {
-    oGame.currentActor = noone;
+    state = endPath;
 }
+
+
 </string>
           </argument>
         </arguments>
@@ -283,6 +374,29 @@ if(oCursor.selectedActor == id) {
             switch(attackType){
                 case "ranged":
                     draw_line_width_colour(x + 16, y + 16, tempNode.x + 16, tempNode.y + 16, 4, c_purple, c_purple);
+                    break;
+                case "melee":
+                    tempX = abs(tempNode.gridX - gridX);
+                    tempY = abs(tempNode.gridY - gridY);
+                    if(tempX &lt;= 1 &amp;&amp; tempY &lt;= 1){
+                        draw_line_width_colour(x + 16, y + 16, tempNode.x + 16, tempNode.y + 16, 4, c_purple, c_purple);
+                    } else {
+                        current = noone;
+                        tempG = 100;
+                        for(ii = 0; ii &lt; ds_list_size(tempNode.neighbors); ii += 1){
+                            neighbor = ds_list_find_value(tempNode.neighbors, ii);
+                            if(neighbor.occupant == noone &amp;&amp; neighbor.G &gt; 0 &amp;&amp; neighbor.G &lt; tempG){
+                                tempG = neighbor.G;
+                                current = neighbor;
+                            }
+                        }
+                        
+                        draw_line_width_colour(tempNode.x + 16, tempNode.y + 16, current.x + 16, current.y + 16, 4, c_purple, c_purple);
+                        while(current.parent != noone){
+                            draw_line_width_colour(current.x + 16, current.y + 16, current.parent.x + 16, current.parent.y + 16, 4, c_purple, c_purple);
+                            current = current.parent;
+                        }
+                    }
                     break;
             }
         }

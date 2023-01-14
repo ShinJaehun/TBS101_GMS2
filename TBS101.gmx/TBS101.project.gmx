@@ -23,6 +23,8 @@
     <script>scripts\color_move_node.gml</script>
     <script>scripts\movement_range.gml</script>
     <script>scripts\ranged_attack_range.gml</script>
+    <script>scripts\melee_attack_range.gml</script>
+    <script>scripts\create_path.gml</script>
   </scripts>
   <fonts name="fonts">
     <font>fonts\fDefault</font>

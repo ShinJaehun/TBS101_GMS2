@@ -130,13 +130,11 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
           <argument>
             <kind>1</kind>
             <string>switch(state){
-    case "initializing": // 초기화는 1회만...
-        //이 로직을 oNode 대신 여기에 넣어야 작동한다!
+    case "initializing":
         with(oNode){
-            //if(instance_position(x + 1, y + 1, oTerrain)){ // 예상한대로 잘 작동함, 아마 중간값 같은 걸 쓰는 거 같애
             if(instance_position(x + 16, y + 16, oTerrain)){
                 tempTerrain = instance_position(x + 16, y + 16, oTerrain);
-                switch(tempTerrain.type){ // room에 그려 넣은 terrain type에 따라서
+                switch(tempTerrain.type){
                     case "wall":
                         instance_change(oWall, true);
                         type = "wall";
@@ -149,7 +147,7 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
                         break;
                 }
                 with(tempTerrain){
-                    instance_destroy(); // oNode는 삭제하고 wall/rubble로 대체
+                    instance_destroy();
                 }
             }
             
@@ -165,8 +163,7 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
         tempInit = ds_priority_create();
         with(oActor){
             initRoll = irandom_range(1, 20) + initiative;
-            ds_priority_add(other.tempInit, id, initRoll); // other는... oGame으로 대처할 수 있음????
-            //ds_priority_add(oGame.tempInit, id, initRoll); // other는... oGame으로 대처할 수 있음????
+            ds_priority_add(other.tempInit, id, initRoll);
         }
         
         while(ds_priority_size(tempInit) &gt; 0){
@@ -181,6 +178,7 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
 
     case "ready":  
         if(currentActor == noone){
+        // show_debug_message("currentActor none!!!!!!!!!");
             turnCounter += 1;
 
             if (turnCounter &gt;= turnMax) {
@@ -200,6 +198,9 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
                 switch(currentActor.attackType){
                     case "ranged":
                         ranged_attack_range(currentActor);
+                        break;
+                    case "melee":
+                        melee_attack_range(currentActor);
                         break;
                 }
             } else {

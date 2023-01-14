@@ -59,8 +59,11 @@ damageType = "slashing";
 armorClass = 18;
 
 // movement and action variables
-move = 5;  // 얼마나 많은 그리드를 움직일 수 있는가?
+move = 5;
 actions = 2;
+
+// special action variables
+charge = true;
 
 // initiative variables
 initiative = dexMod;

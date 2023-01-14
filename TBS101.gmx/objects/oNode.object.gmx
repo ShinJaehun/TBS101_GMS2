@@ -91,7 +91,8 @@ if(instance_position(x + 16, y + 16, oTerrain)){
           <argument>
             <kind>1</kind>
             <string>draw_sprite_ext(sprite_index, -1, x, y, 1, 1, 0, color, 1)
-
+// print G score for debuging
+// draw_text(x+6, y+6, string(G));
 </string>
           </argument>
         </arguments>

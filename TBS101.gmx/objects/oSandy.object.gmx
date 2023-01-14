@@ -52,9 +52,21 @@ hitBonus = profMod + dexMod;
 attackType = "ranged";
 attackRange = 15 * GRID_SIZE;
 
+// defence variabless
+damageDice = 6;
+damageBonus = dexMod;
+damageType = "piercing";
+
+// defence variables
+armorClass = 15;
+
 // move and action variables
-move = 7;  // 얼마나 많은 그리드를 움직일 수 있는가?
+move = 7;
 actions = 2;
+
+// special action variables
+sneakAttack = true;
+sneakAttackDamage = 6;
 
 // initiative variables
 initiative = dexMod;
