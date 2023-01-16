@@ -104,5 +104,16 @@ start.moveNode = false;
 // destory 
 ds_list_destroy(closed);
 
+start.moveNode = false;
+
+create_buttons(start.occupant);
+
+
+
+
+
+
+
+
 
 

@@ -56,11 +56,12 @@ maxHitPoints = 4 + conMod + ((level - 1) * (3 + conMod));
 hitPoints = maxHitPoints;
 
 // attack variables
-
 hitBonus = profMod + strMod;
 attackType = "melee";
 attackTarget = noone;
-attackTimer = 0;
+
+
+actionTimer = 0;
 
 // damage variables
 damageDice = 4;
@@ -80,9 +81,16 @@ canAct = false;
 charge = false;
 sneakAttack = false;
 
+// spell and action variables
+readiedAction = "error";
+
 // initiative variables
 initiative = dexMod;
 initRoll = 0;
+
+// variables related to button
+defaultActions = ds_list_create();
+ds_list_add(defaultActions, "end turn");
 
 // variable related to pathing
 movementPath = path_add();
@@ -129,8 +137,8 @@ switch(state){
         break;
 
     case "begin attack":
-        attackTimer -= 1;
-        if(attackTimer &lt;= 0){
+        actionTimer -= 1;
+        if(actionTimer &lt;= 0){
             state = "attack";
             // show_debug_message("state : " + state);
         }
@@ -204,7 +212,7 @@ switch(state){
                 
                 state = "end attack";
                 // show_debug_message("state : " + state);
-                attackTimer = 30;
+                actionTimer = 30;
                 break;
                 
             case "melee":
@@ -245,14 +253,14 @@ switch(state){
                 }
                 state = "end attack";
                 // show_debug_message("state : " + state);
-                attackTimer = 10;
+                actionTimer = 10;
                 break;
         }
         break;
         
     case "end attack":
-        attackTimer -= 1;
-        if(attackTimer &lt;= 0){
+        actionTimer -= 1;
+        if(actionTimer &lt;= 0){
             if(actions &gt; 0){
                 oCursor.selectedActor = id;
                 movement_range(map[gridX, gridY], move, actions);
@@ -266,8 +274,56 @@ switch(state){
             //show_debug_message("oActor state : " + state);
         }
         break;
+
+    case "begin action":
+    
+        break;
         
+    case "perform action":
+        perform_action(id, readiedAction);
+        wipe_nodes();
+        break;
+              
+    case "end actions":
+        actionTimer -= 1;
+        if(actionTimer &lt;= 0){
+            state = "idle";
+            
+            if(actions &gt; 0){
+                movement_range(map[gridX, gridY], move, actions)
+            } else {
+                state = "idle";
+                oCursor.selectedActor = noone;
+                oGame.currentActor = noone;
+            }
+        }
+        break;  
+        
+        
+    case "end turn":
+        actionTimer -= 1;
+        if(actionTimer &lt;= 0){
+            oCursor.selectedActor = noone;
+            oGame.currentActor = noone;
+            state = "idle";
+        }    
+        break;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -355,7 +411,7 @@ if(endPath == "ready"){
           <argument>
             <kind>1</kind>
             <string>// if cursor is hovering over a different node than actor's
-if(oCursor.selectedActor == id) {
+if(oCursor.selectedActor == id &amp;&amp; oCursor.hoverNode != noone) {
 
     // 커서가 있는 그리드까지 라인 그리기, 이 코드를 cursor가 아닌 여기에 쓰는 이유가 있는디 잘 모르겠음.
     //if (oCursor.hoverNode != noone &amp;&amp; oCursor.hoverNode != map[gridX, gridY]){

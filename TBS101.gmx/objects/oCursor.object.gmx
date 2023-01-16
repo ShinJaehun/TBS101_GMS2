@@ -3,7 +3,7 @@
   <spriteName>sCursor</spriteName>
   <solid>0</solid>
   <visible>-1</visible>
-  <depth>-3</depth>
+  <depth>-6</depth>
   <persistent>0</persistent>
   <parentName>&lt;undefined&gt;</parentName>
   <maskName>&lt;undefined&gt;</maskName>
@@ -30,7 +30,12 @@ gridY = 0;
 
 hoverNode = noone;
 
+hoverButton = noone;
+buttonTimer = 0;
+
 selectedActor = noone;
+
+instance_create(0, 0, oSelector);
 </string>
           </argument>
         </arguments>
@@ -65,6 +70,67 @@ if (gridX &lt; 0 || gridY &lt; 0 || gridX &gt;= room_width / GRID_SIZE || gridY 
     hoverNode = map[gridX, gridY];
 }
 
+with(oConfirmButton){
+    if(keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord(hotKey))){
+        other.selectedActor.state = "perform action";
+        instance_destroy();
+    }
+}
+
+if(instance_place(x, y, oButton)){
+    if(instance_place(x, y, oButton) == hoverButton){
+        buttonTimer += 1;
+    } else {
+        buttonTimer = 0;
+    }
+
+    hoverButton = instance_place(x, y, oButton);
+    hoverNode = noone;
+} else {
+    hoverButton = noone;
+    buttonTimer = 0;
+}
+
+with(oButton){
+    if(keyboard_check_pressed(ord(hotKey))){
+        perform_buttons(oCursor.selectedActor, id);
+    }
+}
+
+if(keyboard_check_pressed(vk_escape)){
+    if(selectedActor.state == "begin action"){
+        selectedActor.state = "idle";
+        with(oConfirmButton){
+            instance_destroy();
+        }
+    }
+    wipe_nodes();
+    movement_range(map[selectedActor.gridX, selectedActor.gridY], selectedActor.move, selectedActor.actions);
+    if(selectedActor.canAct){
+        switch(selectedActor.attackType){
+            case "ranged":
+                ranged_attack_range(selectedActor);
+                break;
+            case "melee":
+                melee_attack_range(selectedActor);
+                break;    
+        }
+    }
+}
+
+
+if(mouse_check_button_pressed(mb_left)){
+    if(selectedActor != noone &amp;&amp; hoverButton != noone){
+        perform_buttons(selectedActor, hoverButton);
+    }
+    if(instance_place(x, y, oConfirmButton)){
+        selectedActor.state = "perform action";
+        with(oConfirmButton){
+            instance_destroy();
+        }
+    }
+}
+
 if (mouse_check_button_pressed(mb_right)) {
     if (selectedActor != noone &amp;&amp; hoverNode.moveNode) {
         current = hoverNode;
@@ -88,9 +154,11 @@ if (mouse_check_button_pressed(mb_right)) {
         // reduce selectedActor's actions and wipe nodes!
         if(hoverNode.G &gt; selectedActor.move){
             selectedActor.actions -= 2;
+            wipe_buttons();
             wipe_nodes();
         } else {
             selectedActor.actions -= 1;
+            wipe_buttons();
             wipe_nodes();
         }
         
@@ -106,9 +174,10 @@ if (mouse_check_button_pressed(mb_right)) {
                 selectedActor.actions -= 1;
                 selectedActor.attackTarget = hoverNode.occupant;
                 selectedActor.state = "begin attack"
-                selectedActor.attackTimer = 10;
+                selectedActor.actionTimer = 10;
                 
                 selectedActor = noone;
+                wipe_buttons();
                 wipe_nodes();
                 break;
             case "melee":
@@ -121,9 +190,10 @@ if (mouse_check_button_pressed(mb_right)) {
                 if(tempX &lt;= 1 &amp;&amp; tempY &lt;= 1){
                     selectedActor.actions -= 1;
                     selectedActor.state = "begin attack";
-                    selectedActor.attackTimer = 10;
+                    selectedActor.actionTimer = 10;
                     
                     selectedActor = noone;
+                    wipe_buttons();
                     wipe_nodes();    
                 } else {
                     tempG = 100;
@@ -157,6 +227,7 @@ if (mouse_check_button_pressed(mb_right)) {
                     selectedActor.canAct = false;
                     
                     selectedActor = noone;
+                    wipe_buttons();
                     wipe_nodes();
                 }
                 break;
@@ -186,13 +257,34 @@ if (mouse_check_button_pressed(mb_right)) {
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>if(hoverNode != noone){
+            <string>// 요 내용을 oSelector로 분리!
+/*
+if(hoverNode != noone){
     // sSelected를 그리고,
     draw_sprite(sSelected, -1, gridX * GRID_SIZE, gridY * GRID_SIZE);
 }
+*/
 
 draw_self(); // 그 위에 cursor를 그리고
 
+if(hoverButton != noone &amp;&amp; buttonTimer &gt; 15){
+    tempTitle = hoverButton.title;
+    tempText = hoverButton.text;
+    draw_set_font(fCrit);
+    heightY = string_height(tempTitle) + string_height(tempText);
+    draw_set_color(c_black);
+    draw_rectangle(x + 20, y - heightY, x + 20 + string_width(tempTitle), y - heightY + string_height(tempTitle), false);
+    draw_set_color(c_white);
+    draw_text(x + 20, y - heightY, tempTitle);
+    draw_set_font(fDefault);
+    draw_set_color(c_black);
+    draw_rectangle(x + 20, y - string_height(tempText), x + 20 + string_width(tempText), y, false);
+    draw_set_color(c_white);
+    draw_text(x + 20, y - string_height(tempText), tempText);
+}
+
+// 디버깅 정보
+/*
 if(hoverNode != noone){
     tempText = string(gridX) + " / " + string(gridY) + " = ";
     
@@ -216,9 +308,8 @@ if(hoverNode != noone){
     draw_rectangle(0, 20, string_width(tempText), 20 + string_height(tempText), false);
     draw_set_color(c_white);
     draw_text(0, 20, tempText);
-    
-
 }
+*/
 
 // 아랫쪽이 보이지 않아서 클릭 후 이름 정보를 오른쪽 위로 옮김!
 if (selectedActor != noone) {
