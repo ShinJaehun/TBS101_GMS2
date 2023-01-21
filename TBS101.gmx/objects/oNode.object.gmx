@@ -25,28 +25,26 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>neighbors = ds_list_create();
-
-color = c_white;
-
-occupant = noone;
-passable = true;
-
-gridX = 0;
+            <string>gridX = 0;
 gridY = 0;
 
 type = "node";
 
+color = c_white;
+
+neighbors = ds_list_create();
+
+occupant = noone;
+passable = true;
+
 // pathfinding variables 
-
+cost = 1;
 parent = noone;
-
 G = 0;
-
 moveNode = false;
 attackNode = false;
+actionNode = false;
 
-cost = 1;
 
 /*
 if(instance_position(x + 16, y + 16, oTerrain)){

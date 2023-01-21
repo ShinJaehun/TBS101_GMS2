@@ -58,13 +58,24 @@ damageType = "bludgeoning";
 // defense variables
 armorClass = 16;
 
+// spell and action variables
+spellHitBonus = profMod + wisMod;
+spellSaveDC = 8 + profMod + wisMod;
+
+firstLevelSlotMax = 2;
+firstLevelSlot = 2;
+
+firstLevelSpellList = ds_list_create();
+
+fill_spell_list(id, level, class);
+
 // move and action variables
-move = 6;  // 얼마나 많은 그리드를 움직일 수 있는가?
+move = 6;
 actions = 2;
 
 // initiative variables
 initiative = dexMod;
-initRoll = 0;
+//initRoll = 0;
 
 </string>
           </argument>

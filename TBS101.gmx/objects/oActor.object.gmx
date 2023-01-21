@@ -25,9 +25,9 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>state = "idle"
+            <string>army = BLUE_ARMY;
 
-army = BLUE_ARMY;
+state = "idle"
 
 gridX = 0;
 gridY = 0;
@@ -60,7 +60,6 @@ hitBonus = profMod + strMod;
 attackType = "melee";
 attackTarget = noone;
 
-
 actionTimer = 0;
 
 // damage variables
@@ -72,7 +71,6 @@ damageType = "piercing";
 armorClass = 10 + dexMod;
 
 // move and action variables
-
 move = 6;
 actions = 2;
 canAct = false;
@@ -82,7 +80,15 @@ charge = false;
 sneakAttack = false;
 
 // spell and action variables
+spellHitBonus = 0;
+spellSaveDC = 0;
+
+firstLevelSlotMax = 0;
+firstLevelSlot = 0;
+
 readiedAction = "error";
+targetingType = "error";
+actionRange = 0;
 
 // initiative variables
 initiative = dexMod;
@@ -276,6 +282,8 @@ switch(state){
         break;
 
     case "begin action":
+        wipe_nodes();
+        action_targeting(id, targetingType, actionRange);
     
         break;
         
