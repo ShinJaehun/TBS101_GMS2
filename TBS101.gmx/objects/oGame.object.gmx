@@ -190,8 +190,12 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
             currentActor.actions = 2;
             currentActor.canAct = true;
             
+            // 중복 코드 삭제
+            currentActor.state = "initialize turn";
+            
             // only pass off actions and cursor control if actor is BLUE_ARMY
             // otherwise set flash variable to true and set alarm
+            /*
             if (currentActor.army == BLUE_ARMY){
                 oCursor.selectedActor = currentActor;
                 movement_range(map[currentActor.gridX, currentActor.gridY], currentActor.move, currentActor.actions);                    
@@ -207,8 +211,10 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
                 currentActor.flash = true;
                 currentActor.alarm[0] = 30;
             }
+            */
         }   
         break;
+        
 }
 </string>
           </argument>

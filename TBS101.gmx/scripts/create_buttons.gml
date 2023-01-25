@@ -32,6 +32,26 @@ for (ii = 0; ii < ds_list_size(buttonList); ii += 1){
             break;
 
         // Cleric spells
+        case "Bless":
+            with(instance_create(buttonX + (ii * 96), buttonY, oButton)){
+                title = "BLESS";
+                text = "Give all party members a small bonus to attack and save rolls#1d4 bonus (5 rounds)";
+                hotKey = string(other.ii + 1);
+                spell = true;
+                spellSlot = string(other.actor.firstLevelSlot);
+            }    
+            break;
+
+        case "Guiding Bolt":
+            with(instance_create(buttonX + (ii * 96), buttonY, oButton)){
+                title = "GUIDING BOLT";
+                text = "right click an enemy to fire an illuminating bolt!#4d6 RADIANT damage#bonus on next attack against target!";
+                hotKey = string(other.ii + 1);
+                spell = true;
+                spellSlot = string(other.actor.firstLevelSlot);
+            }    
+            break;
+                    
         case "Healing Word":
             with(instance_create(buttonX + (ii * 96), buttonY, oButton)){
                 title = "HEALING WORD";
@@ -42,7 +62,19 @@ for (ii = 0; ii < ds_list_size(buttonList); ii += 1){
             }    
             break;
         
+            
         // Wizard spells
+        case "Acid Orb":
+            with(instance_create(buttonX + (ii * 96), buttonY, oButton)){
+                title = "ACID ORB";
+                text = "right click and enemy to fire an orb of deadly acid!#3d10 ACID damage#ongoing burn";
+                hotKey = string(other.ii + 1);
+                spell = true;
+                spellSlot = string(other.actor.firstLevelSlot);
+            }    
+            break;
+
+        
         case "Burning Hands":
             with(instance_create(buttonX + (ii * 96), buttonY, oButton)){
                 title = "BURNING HANDS";

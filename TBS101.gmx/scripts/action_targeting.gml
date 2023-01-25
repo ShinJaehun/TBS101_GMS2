@@ -10,6 +10,8 @@ switch(targetingType){
     case "cone":
         originX = actor.x + 16;
         originY = actor.y + 16;
+        // Burning Hands 할때 오류가 발생하고 있음.
+        // 버그 Variable <unknown_object>.y(1, -2147483648) not set before reading it.
         dir = point_direction(originX, originY, oCursor.hoverNode.x + 16, oCursor.hoverNode.y + 16);
         originX += lengthdir_x(31, dir);
         originY += lengthdir_y(31, dir);

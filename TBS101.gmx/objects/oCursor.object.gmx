@@ -135,6 +135,7 @@ if(mouse_check_button_pressed(mb_left)){
 }
 
 if (mouse_check_button_pressed(mb_right)) {
+    // 버튼을 오른쪽 버튼으로 클릭하면 unknown object, unknown variable
     if (selectedActor != noone &amp;&amp; hoverNode.moveNode) {
         current = hoverNode;
         

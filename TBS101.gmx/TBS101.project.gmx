@@ -14,9 +14,12 @@
     </sprites>
     <sprites name="effects">
       <sprite>sprites\sArrow</sprite>
+      <sprite>sprites\sGuidingBolt</sprite>
       <sprite>sprites\sSelected</sprite>
       <sprite>sprites\sBiff</sprite>
       <sprite>sprites\sFlame</sprite>
+      <sprite>sprites\sBless</sprite>
+      <sprite>sprites\sAcidOrb</sprite>
     </sprites>
     <sprites name="actors">
       <sprite>sprites\sTarget</sprite>
@@ -37,6 +40,7 @@
       <script>scripts\perform_action.gml</script>
       <script>scripts\fill_spell_list.gml</script>
       <script>scripts\action_targeting.gml</script>
+      <script>scripts\attack_roll.gml</script>
     </scripts>
     <scripts name="butons">
       <script>scripts\create_buttons.gml</script>
@@ -79,6 +83,9 @@
       <object>objects\oRangedAttack</object>
       <object>objects\oFlameEmitter</object>
       <object>objects\oFlame</object>
+      <object>objects\oBless</object>
+      <object>objects\oAcidOrb</object>
+      <object>objects\oGuidingBolt</object>
     </objects>
     <objects name="nodes and terrain">
       <object>objects\oTerrain</object>

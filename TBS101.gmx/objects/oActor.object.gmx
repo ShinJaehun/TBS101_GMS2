@@ -107,9 +107,26 @@ endPath = "idle"
 
 moveSpeed = 8;
 
-// variables realted to effects
+// variables related to buffs/debuffs
+
+// buffs
+blessed = 0;
+
+// debuffs
+acidBurn = 0;
+guidingBolt = false;
+
+// variables realted to FX
 shake = 0;
 shakeMag = 0;
+
+
+
+
+
+
+
+
 </string>
           </argument>
         </arguments>
@@ -135,6 +152,46 @@ shakeMag = 0;
             <string>shake -= 1;
 
 switch(state){
+    case "initialize turn":
+        if(blessed &gt; oGame.roundCounter){
+            with(instance_create(x, y, oBless)){
+                target = other;
+            }
+        } else {
+            blessed = 0;
+        }
+        
+        if(acidBurn &gt; 0){
+            damage = irandom_range(1, 4);
+            with(instance_create(x + 28, y + 2, oDamageText)){
+                text = "-" + string(other.damage);
+                ground = y;
+            }
+            hitPoints -= damage;
+            acidBurn -= 1;
+        }
+        
+        if(army == BLUE_ARMY){
+            movement_range(map[gridX, gridY], move, actions);
+            switch(attackType){
+                case "melee":
+                    melee_attack_range(id);
+                    break;
+                case "ranged":
+                    ranged_attack_range(id);
+                    break;
+            }
+            
+            oCursor.selectedActor = id;
+        } else {
+            flash = true;
+            alarm[0] = 30;
+        }
+        
+        state = "ready";
+        
+        break;
+        
     case "begin path":
         //begin moving along path
         path_start(movementPath, moveSpeed, 0, true);
@@ -167,7 +224,9 @@ switch(state){
             }
         }
         
+        // attack_roll()
         // determine outcome of roll
+        /*
         if(attackRoll == 20){
             attackStatus = "crit";
         } else {
@@ -177,6 +236,10 @@ switch(state){
                 attackStatus = "miss";
             }
         }
+        */
+        
+        attackStatus = attack_roll(id, attackTarget);
+        
         tempDamage = 0;
         
         // make damage roll
@@ -292,7 +355,7 @@ switch(state){
         wipe_nodes();
         break;
               
-    case "end actions":
+    case "end action":
         actionTimer -= 1;
         if(actionTimer &lt;= 0){
             state = "idle";
