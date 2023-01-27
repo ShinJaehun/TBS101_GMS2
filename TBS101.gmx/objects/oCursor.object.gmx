@@ -97,7 +97,7 @@ with(oButton){
     }
 }
 
-if(keyboard_check_pressed(vk_escape)){
+if(keyboard_check_pressed(vk_escape) &amp;&amp; selectedActor != noone){
     if(selectedActor.state == "begin action"){
         selectedActor.state = "idle";
         with(oConfirmButton){
@@ -107,7 +107,10 @@ if(keyboard_check_pressed(vk_escape)){
             instance_destroy();
         }
     }
+
+    wipe_buttons();    
     wipe_nodes();
+    
     movement_range(map[selectedActor.gridX, selectedActor.gridY], selectedActor.move, selectedActor.actions);
     if(selectedActor.canAct){
         switch(selectedActor.attackType){
@@ -120,7 +123,6 @@ if(keyboard_check_pressed(vk_escape)){
         }
     }
 }
-
 
 if(mouse_check_button_pressed(mb_left)){
     if(selectedActor != noone &amp;&amp; hoverButton != noone){
@@ -136,7 +138,8 @@ if(mouse_check_button_pressed(mb_left)){
 
 if (mouse_check_button_pressed(mb_right)) {
     // 버튼을 오른쪽 버튼으로 클릭하면 unknown object, unknown variable
-    if (selectedActor != noone &amp;&amp; hoverNode.moveNode) {
+    //if (selectedActor != noone &amp;&amp; hoverNode.moveNode) {
+    if (selectedActor != noone &amp;&amp; hoverNode != noone &amp;&amp; hoverNode.moveNode) {
         current = hoverNode;
         
         create_path(selectedActor, current);
@@ -170,7 +173,8 @@ if (mouse_check_button_pressed(mb_right)) {
 
     } // moveNode end
 
-    if(selectedActor != noone &amp;&amp; hoverNode.attackNode){
+    //if(selectedActor != noone &amp;&amp; hoverNode.attackNode){
+    if(selectedActor != noone &amp;&amp; hoverNode != noone &amp;&amp; hoverNode.attackNode){
     
         switch(selectedActor.attackType){
             case "ranged":
@@ -238,7 +242,8 @@ if (mouse_check_button_pressed(mb_right)) {
         }
     } // attackNode end
     
-    if(hoverNode.actionNode){
+    //if(hoverNode.actionNode){
+    if(hoverNode != noone &amp;&amp; hoverNode.actionNode){
         selectedActor.state = "perform action";
         with(oConfirmBox){
             instance_destroy();
@@ -280,6 +285,14 @@ if(hoverNode != noone){
 */
 
 draw_self(); // 그 위에 cursor를 그리고
+
+draw_rectangle_colour(30, 0, 350, 16, c_black, c_black, c_black, c_black, false);
+buttonCount = 0;
+with(oButton){
+    other.buttonCount += 1;
+}
+
+draw_text(300, 0, string(buttonCount));
 
 if(hoverButton != noone &amp;&amp; buttonTimer &gt; 15){
     tempTitle = hoverButton.title;
