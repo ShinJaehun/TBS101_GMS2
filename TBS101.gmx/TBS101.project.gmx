@@ -9,6 +9,7 @@
     <sprites name="buttons and UI">
       <sprite>sprites\sCursor</sprite>
       <sprite>sprites\sConfirmButton</sprite>
+      <sprite>sprites\sRetryButton</sprite>
       <sprite>sprites\sButtonEndTurn</sprite>
       <sprite>sprites\sButtonDefault</sprite>
     </sprites>
@@ -86,6 +87,11 @@
       <object>objects\oBless</object>
       <object>objects\oAcidOrb</object>
       <object>objects\oGuidingBolt</object>
+      <object>objects\oDying</object>
+      <object>objects\oFadeLose</object>
+      <object>objects\oFadeWin</object>
+      <object>objects\oFadeIn</object>
+      <object>objects\oEndBox</object>
     </objects>
     <objects name="nodes and terrain">
       <object>objects\oTerrain</object>
@@ -95,6 +101,7 @@
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
+    <room>rooms\room1</room>
   </rooms>
   <constants number="3">
     <constant name="GRID_SIZE">32</constant>

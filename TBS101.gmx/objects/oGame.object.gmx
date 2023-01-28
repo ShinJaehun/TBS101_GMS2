@@ -25,7 +25,10 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>draw_set_font(fDefault);
+            <string>instance_create(x, y, oFadeIn);
+
+
+draw_set_font(fDefault);
 
 randomize();
 //random_set_seed(106543);
@@ -129,7 +132,20 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>switch(state){
+            <string>if(keyboard_check_pressed(vk_delete)){
+    oCursor.selectedActor = noone;
+    oGame.currentActor = noone;
+
+    with(oActor){
+        if(army == BLUE_ARMY){
+            instance_destroy();
+        }
+    }
+    wipe_nodes();
+    wipe_buttons();
+}
+
+switch(state){
     case "initializing":
         with(oNode){
             if(instance_position(x + 16, y + 16, oTerrain)){
@@ -173,48 +189,60 @@ with(instance_create(5 * GRID_SIZE, 8 * GRID_SIZE, oHero)){
         turnMax = ds_list_size(turnOrder);
         
         ds_priority_destroy(tempInit);
-        state = "ready";
+        state = "waiting";
         break;
 
     case "ready":  
         if(currentActor == noone){
-        // show_debug_message("currentActor none!!!!!!!!!");
-            turnCounter += 1;
-
-            if (turnCounter &gt;= turnMax) {
-                turnCounter = 0;
-                roundCounter += 1;
+            redCount = 0;
+            blueCount = 0;
+            with(oActor){
+                if(army == RED_ARMY){
+                    other.redCount += 1;
+                }
+                if(army == BLUE_ARMY){
+                    other.blueCount += 1;
+                }
             }
             
-            currentActor = ds_list_find_value(turnOrder, turnCounter);
-            currentActor.actions = 2;
-            currentActor.canAct = true;
-            
-            // 중복 코드 삭제
-            currentActor.state = "initialize turn";
-            
-            // only pass off actions and cursor control if actor is BLUE_ARMY
-            // otherwise set flash variable to true and set alarm
-            /*
-            if (currentActor.army == BLUE_ARMY){
-                oCursor.selectedActor = currentActor;
-                movement_range(map[currentActor.gridX, currentActor.gridY], currentActor.move, currentActor.actions);                    
-                switch(currentActor.attackType){
-                    case "ranged":
-                        ranged_attack_range(currentActor);
-                        break;
-                    case "melee":
-                        melee_attack_range(currentActor);
-                        break;
+            if(redCount &gt; 0 &amp;&amp; blueCount &gt; 0){
+                turnCounter += 1;
+    
+                if (turnCounter &gt;= turnMax) {
+                    turnCounter = 0;
+                    roundCounter += 1;
+                }
+                
+                currentActor = ds_list_find_value(turnOrder, turnCounter);
+                
+                if (instance_exists(currentActor)) {
+                    currentActor.actions = 2;
+                    currentActor.canAct = true;
+                    
+                    currentActor.state = "initialize turn";
+               
+                } else {
+                    currentActor = noone;
                 }
             } else {
-                currentActor.flash = true;
-                currentActor.alarm[0] = 30;
+                if(blueCount &lt;= 0){
+                    state = "retry room";
+                } else {
+                    state = "next room";
+                }
             }
-            */
         }   
         break;
         
+    case "retry room":
+        instance_create(0, 0, oFadeLose);
+        state = "waiting";
+        break;
+ 
+    case "next room":
+        instance_create(0, 0, oFadeWin);
+        state = "waiting";
+        break;          
 }
 </string>
           </argument>

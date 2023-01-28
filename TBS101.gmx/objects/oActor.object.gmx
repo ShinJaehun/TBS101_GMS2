@@ -151,6 +151,21 @@ shakeMag = 0;
             <kind>1</kind>
             <string>shake -= 1;
 
+if (hitPoints &lt;= 0) {
+    map[gridX, gridY].occupant = noone;
+
+    if (oGame.currentActor = id){
+        oGame.currentActor = noone;
+        oCursor.selectedActor = noone;
+    }
+    
+    with(instance_create(x, y, oDying)){
+        sprite_index = other.sprite_index;
+    }
+    
+    instance_destroy();
+}
+
 switch(state){
     case "initialize turn":
         if(blessed &gt; oGame.roundCounter){

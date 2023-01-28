@@ -134,6 +134,15 @@ if(mouse_check_button_pressed(mb_left)){
             instance_destroy();
         }
     }
+    
+    if(instance_place(x, y, oEndBox)){
+        with(oFadeLose){
+            finalize = true;
+        }
+        with(oEndBox){
+            instance_destroy();
+        }
+    }
 }
 
 if (mouse_check_button_pressed(mb_right)) {
