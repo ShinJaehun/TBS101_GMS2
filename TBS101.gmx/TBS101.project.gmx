@@ -53,6 +53,8 @@
       <script>scripts\ranged_attack_range.gml</script>
       <script>scripts\movement_range.gml</script>
       <script>scripts\create_path.gml</script>
+      <script>scripts\heuristic.gml</script>
+      <script>scripts\ai_movement.gml</script>
     </scripts>
   </scripts>
   <fonts name="fonts">
@@ -98,6 +100,7 @@
       <object>objects\oWall</object>
       <object>objects\oRubble</object>
     </objects>
+    <object>objects\oAI</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
